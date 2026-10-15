@@ -1,0 +1,20 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert/strict'),turf=require('../dist/turf.min.js');
+const rect=(x0,x1)=>turf.bboxPolygon([x0,0,x1,1]);
+const root={id:'root',iso:'TST',level:0,name:'Test',feature:rect(0,3),parent:null,children:['a','b','c']};
+const nodes={root};for(const [i,id] of ['a','b','c'].entries())nodes[id]={id,iso:'TST',level:1,name:id,feature:rect(i,i+1),parent:'root',children:[]};
+const controls=new Map();const $=s=>{if(!controls.has(s))controls.set(s,{click(){this.clicked=true},querySelector(){return this},querySelectorAll(){return []}});return controls.get(s)};
+const ctx={turf,nodes,state:{marks:{a:{color:'#ff0000'},b:{},c:{}},labels:{'color:#ff0000':'red'},splits:['root']},selected:nodes.b,busy:false,mode:'color',color:'#000000',icon:'★',$,status(){},save(){},checkpoint(){ctx.history.push(JSON.stringify(ctx.state))},history:[],select(){},split(){},apply:async n=>{ctx.state.marks[n.id]={...ctx.mark(n),[ctx.mode]:ctx.mode==='color'?ctx.color:ctx.icon}},render(){},drawPalette(){},renderLegend(){},init(){},document:{},mark(n){return ctx.state.marks[n.id]||(n.parent?ctx.mark(nodes[n.parent]):{})},descendants(n){return n.children.flatMap(id=>[nodes[id],...ctx.descendants(nodes[id])])}};
+vm.createContext(ctx);vm.runInContext(fs.readFileSync(require('path').join(__dirname,'../dist/editor-actions.js'),'utf8'),ctx);
+(async()=>{
+ctx.merge();assert.equal(ctx.state.merged.root.join(','),'a');let visible=ctx.leaves();assert.deepEqual(Array.from(visible,n=>n.id),['root','a']);assert.equal(ctx.mark(nodes.a).color,'#ff0000');assert(Math.abs(turf.area(visible[0].feature)+turf.area(visible[1].feature)-turf.area(root.feature))<0.1);assert.equal(turf.intersect(turf.featureCollection(visible.map(n=>n.feature))),null);
+ctx.color='#00ff00';await ctx.apply(visible[0]);assert.equal(ctx.mark(nodes.a).color,'#ff0000');assert.equal(ctx.leaves().length,2);
+ctx.selected=ctx.leaves()[0];ctx.merge();assert.equal(ctx.state.marks.root.color,'#00ff00','merging an already merged root must not erase its color');
+ctx.mode='erase';await ctx.apply(ctx.leaves()[0]);assert.equal(ctx.mark(nodes.a).color,'#ff0000');
+ctx.state.marks.a.icon='★';ctx.deleteLegend('color:#ff0000');assert(!ctx.state.marks.a.color);assert.equal(ctx.state.marks.a.icon,'★');assert(!ctx.state.labels['color:#ff0000']);assert.equal(ctx.leaves().length,2);
+ctx.deleteLegend('icon:★');assert.equal(ctx.leaves().length,1);assert.equal(ctx.leaves()[0].id,'root');
+ctx.chooseLegend('color:#123456');assert.equal(ctx.color,'#123456');assert(controls.get('[data-mode=color]').clicked);
+await ctx.split(ctx.leaves()[0]);assert(!ctx.state.merged.root);assert.equal(ctx.leaves().length,3);
+const before=JSON.stringify(ctx.state);ctx.state.marks.root={color:'#abcdef'};ctx.state.marks.a={};delete ctx.state.marks.b;ctx.state.marks.c={color:'#123456'};ctx.deleteLegend('color:#abcdef');assert(!ctx.mark(nodes.b).color);assert.equal(ctx.mark(nodes.c).color,'#123456');
+ctx.state=JSON.parse(before);ctx.state.marks={a:{color:'#ff0000'},b:{color:'#00ff00'},c:{icon:'★'}};ctx.selected=nodes.b;ctx.merge();assert(!ctx.state.merged.root,'all marked children stay separate');
+console.log('PASS: partial merge keeps marked geometry separate without overlap; remainder edits preserve retained marks; legend delete clears inherited colors and preserves icons; reopening split and legend selection work.');
+})().catch(e=>{console.error(e);process.exitCode=1});

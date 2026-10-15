@@ -1,0 +1,15 @@
+const fs=require('fs'),path=require('path'),vm=require('vm'),assert=require('assert/strict'),crypto=require('crypto');
+const dist=path.join(__dirname,'../dist'),manifest=JSON.parse(fs.readFileSync(path.join(dist,'data-sources.json'),'utf8'));
+const region={id:'CHN:0:China',iso:'CHN',level:0,name:'China',feature:{geometry:{type:'Polygon',coordinates:[]},properties:{secret:'PRIVATE LEGEND'}}};
+const ctx={URL,language:'en',leaves:()=>[region]};vm.createContext(ctx);vm.runInContext(fs.readFileSync(path.join(dist,'data-licensing.js'),'utf8'),ctx);
+assert.equal(ctx.classifyDataLicense('Open Data Commons Open Database License 1.0'),'ODbL-1.0');assert.equal(ctx.classifyDataLicense('Data license Germany - Attribution - Version 2.0'),'dl-de-by-2.0');assert.equal(ctx.classifyDataLicense('Etalab Open License 2.0'),'Etalab-2.0');
+for(const bad of ['', 'CC BY-NC 4.0','CC BY-ND 4.0','unknown','GPL-3.0'])assert.equal(ctx.classifyDataLicense(bad),null);
+assert.equal(ctx.safeSourceUrl('javascript:alert(1)'),null);
+const source=ctx.registerBoundarySource(manifest.taiwan,'TWN',1);assert.equal(source.license_id,'ODbL-1.0');assert(source.download_url.includes('media.githubusercontent.com/media/'));
+assert.throws(()=>ctx.registerBoundarySource({...manifest.taiwan,boundaryLicense:'CC BY-NC 4.0',boundaryID:'blocked'},'TWN',1),/review/);
+assert.throws(()=>ctx.registerBoundarySource(manifest.taiwan,'CHN',1),/does not match/);
+const out=ctx.boundaryDataExport(),text=JSON.stringify(out);assert(!text.includes('PRIVATE LEGEND'));assert(!text.includes('"color"'));assert.equal(out.license.id,'ODbL-1.0');assert(out.features[0].properties.source_ids.includes(manifest.taiwan.boundaryID));assert(out.sources.every(s=>s.status==='accepted'));
+const hash=f=>crypto.createHash('sha256').update(fs.readFileSync(path.join(dist,f))).digest('hex');assert.equal(manifest.world.sha256,hash('world.geojson'));assert.equal(manifest.taiwan_sha256,hash('taiwan.geojson'));
+const inventory=JSON.parse(fs.readFileSync(path.join(dist,'licenses/turf-inventory.json'),'utf8'));assert.equal(inventory.sha256,hash('turf.min.js'));assert(inventory.packages.length<30);assert(!/MarchingSquares|Affero/.test(fs.readFileSync(path.join(dist,'turf.min.js'),'utf8')));
+const html=fs.readFileSync(path.join(dist,'index.html'),'utf8'),css=fs.readFileSync(path.join(dist,'style.css'),'utf8');assert(!html.includes('unpkg.com'));assert(!css.includes('fonts.googleapis.com'));assert(html.includes('data-licensing.js'));
+console.log('PASS: license gate rejects unknown/restrictive sources; provenance and licenses export without private markings; bundled hashes/notices match; unused full-library modules and CDN/font requests are absent.');

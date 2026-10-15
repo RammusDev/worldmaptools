@@ -1,0 +1,7 @@
+node_modules/
+.openai/
+.env
+.env.*
+*.log
+atlas-map*.json
+coverage/

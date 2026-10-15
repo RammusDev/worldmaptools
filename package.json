@@ -1,0 +1,13 @@
+{
+  "name": "worldmaptools",
+  "version": "1.0.1",
+  "private": true,
+  "description": "Atlas Studio: interactive world map painting and administrative subdivision editor",
+  "scripts": {
+    "start": "node scripts/serve.cjs",
+    "test": "node scripts/test.cjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

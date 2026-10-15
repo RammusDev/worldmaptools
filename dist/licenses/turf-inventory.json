@@ -1,0 +1,258 @@
+{
+  "bundle": "Custom Atlas subset of Turf 7.2.0",
+  "sha256": "11467e990b0e1f8473b995b96666748fcb73ea460aa92f9c6d6a63118fd8fde2",
+  "packages": [
+    {
+      "name": "@turf/area",
+      "version": "7.2.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "git://github.com/Turfjs/turf.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "@turf/bbox",
+      "version": "7.2.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "git://github.com/Turfjs/turf.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "@turf/bbox-polygon",
+      "version": "7.2.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "git://github.com/Turfjs/turf.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "@turf/boolean-point-in-polygon",
+      "version": "7.2.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "git://github.com/Turfjs/turf.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "@turf/center",
+      "version": "7.2.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "git://github.com/Turfjs/turf.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "@turf/clone",
+      "version": "7.4.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "git://github.com/Turfjs/turf.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "@turf/difference",
+      "version": "7.2.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "git://github.com/Turfjs/turf.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "@turf/distance",
+      "version": "7.2.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "git://github.com/Turfjs/turf.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "@turf/explode",
+      "version": "7.2.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "git://github.com/Turfjs/turf.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "@turf/helpers",
+      "version": "7.2.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "git://github.com/Turfjs/turf.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "@turf/intersect",
+      "version": "7.2.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "git://github.com/Turfjs/turf.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "@turf/invariant",
+      "version": "7.2.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "git://github.com/Turfjs/turf.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "@turf/meta",
+      "version": "7.2.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "git://github.com/Turfjs/turf.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "@turf/nearest-point",
+      "version": "7.2.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "git://github.com/Turfjs/turf.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "@turf/point-on-feature",
+      "version": "7.2.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "git://github.com/Turfjs/turf.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "@turf/union",
+      "version": "7.2.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "git://github.com/Turfjs/turf.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "bignumber.js",
+      "version": "9.3.1",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/MikeMcl/bignumber.js.git"
+      },
+      "noticeFiles": [
+        "LICENCE.md"
+      ]
+    },
+    {
+      "name": "point-in-polygon-hao",
+      "version": "1.2.4",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "git+https://github.com/rowanwins/point-in-polygon-hao.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "polyclip-ts",
+      "version": "0.16.8",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/luizbarboza/polyclip-ts.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "robust-predicates",
+      "version": "3.0.3",
+      "license": "Unlicense",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/mourner/robust-predicates.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "splaytree-ts",
+      "version": "1.0.2",
+      "license": "BDS-3-Clause",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/SBanksX/splaytree-ts.git"
+      },
+      "noticeFiles": [
+        "LICENSE"
+      ]
+    }
+  ]
+}

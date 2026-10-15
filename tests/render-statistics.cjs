@@ -1,0 +1,12 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert/strict'),path=require('path');
+const controls=new Map(),element=()=>({children:[],append(x){this.children.push(x)},replaceChildren(){this.children=[]}});
+const visible=Array.from({length:12},(_,i)=>({id:String(i),name:'Region '+i,level:0,feature:{geometry:{type:'Polygon',coordinates:[]}}}));
+const marks={};
+const layer=()=>({addTo(){return this},eachLayer(fn){fn({bindTooltip(){},on(){},setTooltipContent(){},getElement:()=>({setAttribute(){}})})},setStyle(){}});
+const ctx={language:'zh-Hant',leaves:()=>visible,mark:n=>marks[n.id]||{},shapes:{removeLayer(){}},markers:{removeLayer(){}},L:{geoJSON:layer},regionName:n=>n.name,render(){},renderLegend(){},tr:x=>x,$:id=>{if(!controls.has(id))controls.set(id,element());return controls.get(id)},document:{createElement:element},history:[],initialView:false,select(){},apply(){},split(){},timer:null};
+vm.createContext(ctx);for(const file of ['region-stats.js','fast-render.js'])vm.runInContext(fs.readFileSync(path.join(__dirname,'../dist',file),'utf8'),ctx);
+ctx.render();assert.equal(controls.get('#unpainted-count').textContent,'未著色 12');assert.equal(controls.get('#painted-count').textContent,'已著色 0');
+for(const id of ['0','1','2'])marks[id]={color:'#123456'};ctx.render();assert.equal(controls.get('#painted-count').textContent,'已著色 3');assert.equal(controls.get('#unpainted-count').textContent,'未著色 9');assert.equal(controls.get('#unpainted-list').children.length,10);
+delete marks['0'];ctx.render();assert.equal(controls.get('#painted-count').textContent,'已著色 2');assert.equal(controls.get('#unpainted-count').textContent,'未著色 10');assert.equal(controls.get('#unpainted-list').children.length,0);
+visible.push({id:'subdivision',name:'Subdivision',level:1,feature:{geometry:{type:'Polygon',coordinates:[]}}});ctx.render();assert.equal(controls.get('#unpainted-count').textContent,'未著色 11');
+ctx.language='en';ctx.render();assert.equal(controls.get('#painted-count').textContent,'Painted 2');assert.equal(controls.get('#unpainted-count').textContent,'Unpainted 11');console.log('PASS: actual map render updates statistics after loading, painting, clearing, subdivision changes and language switching.');

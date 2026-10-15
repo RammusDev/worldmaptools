@@ -1,0 +1,11 @@
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),esbuild=require('esbuild');
+const root=path.resolve(__dirname,'../..'),dist=path.join(root,'dist');
+(async()=>{
+ const built=await esbuild.build({entryPoints:[path.join(__dirname,'entry.js')],bundle:true,format:'iife',globalName:'turf',minify:true,legalComments:'inline',metafile:true,write:false,footer:{js:'if(typeof module!=="undefined"&&module.exports)module.exports=turf;'}});
+ const packages=new Map();for(const input of Object.keys(built.metafile.inputs)){const file=path.resolve(input);let dir=path.dirname(file);while(dir!==path.dirname(dir)){const p=path.join(dir,'package.json');if(fs.existsSync(p)){const meta=JSON.parse(fs.readFileSync(p,'utf8'));if(meta.name&&meta.version){if(file.includes(path.sep+'node_modules'+path.sep))packages.set(meta.name,{dir,meta});break}}dir=path.dirname(dir)}}
+ const inventory=[],notices=[];for(const [name,{dir,meta}] of [...packages].sort((a,b)=>a[0].localeCompare(b[0]))){const license=typeof meta.license==='string'?meta.license:'';if(!/^(MIT|ISC|BSD-3-Clause|BDS-3-Clause|Unlicense|0BSD)$/.test(license))throw Error('Unreviewed runtime license: '+name+' '+license);const files=fs.readdirSync(dir).filter(n=>/^(licen[sc]e|copying|notice)(\.|$)/i.test(n)&&fs.statSync(path.join(dir,n)).isFile());if(!files.length)throw Error('Missing runtime license text: '+name);inventory.push({name,version:meta.version,license,repository:meta.repository,noticeFiles:files});notices.push(`${name}@${meta.version}\nDeclared license: ${license}\n${files.map(f=>f+'\n'+fs.readFileSync(path.join(dir,f),'utf8')).join('\n')}`)}
+ fs.writeFileSync(path.join(dist,'turf.min.js'),built.outputFiles[0].contents);const sha256=crypto.createHash('sha256').update(built.outputFiles[0].contents).digest('hex');
+ fs.writeFileSync(path.join(dist,'licenses/Turf-dependencies.txt'),notices.join('\n\n'+'='.repeat(72)+'\n\n'));
+ fs.writeFileSync(path.join(dist,'licenses/turf-inventory.json'),JSON.stringify({bundle:'Custom Atlas subset of Turf 7.2.0',sha256,packages:inventory},null,2)+'\n');
+ console.log(JSON.stringify({runtimePackages:inventory.length,bytes:built.outputFiles[0].contents.length,sha256}));
+})().catch(e=>{console.error(e.message);process.exitCode=1});

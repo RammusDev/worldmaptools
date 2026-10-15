@@ -1,0 +1,3 @@
+*.geojson -text
+dist/turf.min.js -text
+*.json text eol=lf

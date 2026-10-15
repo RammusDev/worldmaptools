@@ -1,0 +1,12 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert/strict'),path=require('path');
+const source=fs.readFileSync(path.join(__dirname,'../dist/i18n.js'),'utf8').split('function translateDOM')[0];
+const ctx={localStorage:{getItem:()=>null}};vm.createContext(ctx);vm.runInContext(source,ctx);
+assert.equal(vm.runInContext("language='en';tr('◐ 著色')",ctx),'◐ Paint');
+assert.equal(vm.runInContext("tr('世界 · 357 個可編輯區域')",ctx),'World · 357 editable regions');
+assert.equal(vm.runInContext("tr('未標記範圍已合併，保留 4 個已標記區域。')",ctx),'Unmarked areas merged; 4 marked regions preserved.');
+assert.equal(vm.runInContext("regionName({level:0,name:'Russia',feature:{properties:{'ISO3166-1-Alpha-2':'RU'}}})",ctx),'Russia');
+assert.equal(vm.runInContext("language='zh-Hant';tr('◐ Paint')",ctx),'◐ 著色');
+assert.equal(vm.runInContext("tr('World · 357 editable regions')",ctx),'世界 · 357 個可編輯區域');
+assert.equal(vm.runInContext("tr('Choose color #123456')",ctx),'選擇色彩 #123456');
+assert.equal(vm.runInContext("regionName({level:1,iso:'TWN',name:'Taipei'})",ctx),'臺北市');
+console.log('PASS: interface strings, region counts, statuses, color controls and Taiwan names switch between Traditional Chinese and English.');

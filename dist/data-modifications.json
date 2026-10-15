@@ -1,0 +1,15 @@
+{
+  "application_version": "1.0.1",
+  "method_document_license": "ODbL-1.0",
+  "license_url": "https://opendatacommons.org/licenses/odbl/1-0/",
+  "scope": "This machine-readable alteration method and derived database rights based on ODbL inputs. Original source licenses and unrelated software copyrights remain applicable.",
+  "input_manifest": "Download atlas-data-sources.json from the Data sources & licenses dialog; it records loaded boundary IDs, provider notices, dates, license links and versioned input URLs. Bundled inputs are in data-sources.json, world.geojson and taiwan.geojson.",
+  "algorithm_version": "Atlas geometry subset of Turf 7.2.0; see licenses/turf-inventory.json and tools/geometry-bundle in the source project",
+  "algorithms": [
+    {"name":"China/Taiwan isolation","implementation":"country-isolation.js","steps":["Taiwan protection is union(world feature whose ISO alpha-3 is TWN, all bundled TWN ADM1 features).","For every CHN root or administrative feature: reject entries whose shapeName/name contains Taiwan, 台灣 or 臺灣, or whose shapeISO is TW, TWN or CN-TW.","Subtract the Taiwan protection union from the CHN feature using polygon difference. Discard null results. Other country features remain unchanged."]},
+    {"name":"Administrative parent assignment","implementation":"app.js","steps":["Each country is an independent editing root.","For levels below ADM1, retain a child if Turf pointOnFeature(child) is inside the parent polygon. At country level, use the provider's national layer after China/Taiwan exclusion.","France and Norway missing country lookup codes map to FRA and NOR; legacy map-save keys are retained. This changes lookup identifiers rather than source coordinates."]},
+    {"name":"Partial merge","implementation":"editor-actions.js","steps":["Traverse visible descendants within the same country. Retain independently marked descendants.","Compute the union of retained region geometries.","Render a separate parent remainder equal to difference(parent geometry, retained union), together with the retained independent geometries.","Cache the remainder by source/retained geometry identity. Painting does not change coordinates."]}
+  ],
+  "derivative_access": "The dialog offers atlas-boundaries.geojson containing all currently displayed geographic features, original source notices and region/source identifiers. It excludes fill colors, symbols and authored legend descriptions. This file or this alteration method plus the identified inputs is provided for recipients' data reuse under the applicable source/ODbL terms.",
+  "no_endorsement": "Boundaries are adapted for visualization. Providers do not endorse this application or its boundary decisions. Different source vintages may not align."
+}
